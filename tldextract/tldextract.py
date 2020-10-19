@@ -68,6 +68,11 @@ CACHE_DIR_DEFAULT = os.path.join(os.path.dirname(__file__), '.suffix_cache/')
 CACHE_DIR = os.path.expanduser(os.environ.get("TLDEXTRACT_CACHE", CACHE_DIR_DEFAULT))
 CACHE_TIMEOUT = os.environ.get('TLDEXTRACT_CACHE_TIMEOUT')
 
+PROXIES = {
+    'http_proxy' = os.environ.get('HTTP_PROXY'),
+    'https_proxy' = os.environ.get('HTTPS_PROXY')
+}
+
 PUBLIC_SUFFIX_LIST_URLS = (
     'https://publicsuffix.org/list/public_suffix_list.dat',
     'https://raw.githubusercontent.com/publicsuffix/list/master/public_suffix_list.dat',
@@ -135,7 +140,7 @@ class TLDExtract(object):
     # TODO: Agreed with Pylint: too-many-arguments
     def __init__(self, cache_dir=CACHE_DIR, suffix_list_urls=PUBLIC_SUFFIX_LIST_URLS,  # pylint: disable=too-many-arguments
                  fallback_to_snapshot=True, include_psl_private_domains=False, extra_suffixes=(),
-                 cache_fetch_timeout=CACHE_TIMEOUT, proxies=None):
+                 cache_fetch_timeout=CACHE_TIMEOUT, proxies=PROXIES):
         """
         Constructs a callable for extracting subdomain, domain, and suffix
         components from a URL.
