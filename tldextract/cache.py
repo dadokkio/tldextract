@@ -113,7 +113,7 @@ class DiskCache(object):
 
             return result
 
-    def cached_fetch_url(self, session, url, timeout):
+    def cached_fetch_url(self, session, url, timeout, proxies):
         """Get a url but cache the response"""
         return self.run_and_cache(
             func=_fetch_url,
@@ -121,15 +121,16 @@ class DiskCache(object):
             kwargs={
                 "session": session,
                 "url": url,
-                "timeout": timeout
+                "timeout": timeout,
+                "proxies": proxies
             },
             hashed_argnames=["url"]
         )
 
 
-def _fetch_url(session, url, timeout):
+def _fetch_url(session, url, timeout, proxies):
 
-    response = session.get(url, timeout=timeout)
+    response = session.get(url, timeout=timeout, proxies=proxies)
     response.raise_for_status()
     text = response.text
 

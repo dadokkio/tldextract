@@ -18,7 +18,7 @@ class SuffixListNotFound(LookupError):
     pass
 
 
-def find_first_response(cache, urls, cache_fetch_timeout=None):
+def find_first_response(cache, urls, cache_fetch_timeout=None, proxies=None):
     """ Decode the first successfully fetched URL, from UTF-8 encoding to
     Python unicode.
     """
@@ -27,7 +27,7 @@ def find_first_response(cache, urls, cache_fetch_timeout=None):
 
         for url in urls:
             try:
-                return cache.cached_fetch_url(session=session, url=url, timeout=cache_fetch_timeout)
+                return cache.cached_fetch_url(session=session, url=url, timeout=cache_fetch_timeout, proxies=proxies)
             except requests.exceptions.RequestException:
                 LOG.exception(
                     'Exception reading Public Suffix List url %s',
@@ -47,7 +47,7 @@ def extract_tlds_from_suffix_list(suffix_list_text):
     return public_tlds, private_tlds
 
 
-def get_suffix_lists(cache, urls, cache_fetch_timeout, fallback_to_snapshot):
+def get_suffix_lists(cache, urls, cache_fetch_timeout, fallback_to_snapshot, proxies):
     """Fetch, parse, and cache the suffix lists"""
     return cache.run_and_cache(
         func=_get_suffix_lists,
@@ -57,16 +57,17 @@ def get_suffix_lists(cache, urls, cache_fetch_timeout, fallback_to_snapshot):
             "urls": urls,
             "cache_fetch_timeout": cache_fetch_timeout,
             "fallback_to_snapshot": fallback_to_snapshot,
+            "proxies": proxies
         },
         hashed_argnames=["urls", "fallback_to_snapshot"]
     )
 
 
-def _get_suffix_lists(cache, urls, cache_fetch_timeout, fallback_to_snapshot):
+def _get_suffix_lists(cache, urls, cache_fetch_timeout, fallback_to_snapshot, proxies):
     """Fetch, parse, and cache the suffix lists"""
 
     try:
-        text = find_first_response(cache, urls, cache_fetch_timeout=cache_fetch_timeout)
+        text = find_first_response(cache, urls, cache_fetch_timeout=cache_fetch_timeout, proxies=proxies)
     except SuffixListNotFound as exc:
         if fallback_to_snapshot:
             text = pkgutil.get_data('tldextract', '.tld_set_snapshot')
