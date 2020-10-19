@@ -69,8 +69,8 @@ CACHE_DIR = os.path.expanduser(os.environ.get("TLDEXTRACT_CACHE", CACHE_DIR_DEFA
 CACHE_TIMEOUT = os.environ.get('TLDEXTRACT_CACHE_TIMEOUT')
 
 PROXIES = {
-    'http_proxy' = os.environ.get('HTTP_PROXY'),
-    'https_proxy' = os.environ.get('HTTPS_PROXY')
+    'http_proxy': os.environ.get('HTTP_PROXY'),
+    'https_proxy': os.environ.get('HTTPS_PROXY')
 }
 
 PUBLIC_SUFFIX_LIST_URLS = (
@@ -268,7 +268,7 @@ class TLDExtract(object):
             cache=self._cache,
             urls=self.suffix_list_urls,
             cache_fetch_timeout=self.cache_fetch_timeout,
-            fallback_to_snapshot=self.fallback_to_snapshot
+            fallback_to_snapshot=self.fallback_to_snapshot,
             proxies=self.proxies
         )
 
